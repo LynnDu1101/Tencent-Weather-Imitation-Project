@@ -1,0 +1,23 @@
+{
+  "id": "5219262",
+  "name": "腾讯天气箭头",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "26257839",
+      "name": "单箭头, 带圈, 左",
+      "font_class": "a-danjiantoudaiquanzuo",
+      "unicode": "e60f",
+      "unicode_decimal": 58895
+    },
+    {
+      "icon_id": "26258143",
+      "name": "单箭头, 带圈, 右",
+      "font_class": "a-danjiantoudaiquanyou",
+      "unicode": "e61f",
+      "unicode_decimal": 58911
+    }
+  ]
+}
