@@ -24,9 +24,40 @@
               <img src="./img/1630660669191.png" class="show-icon" alt="">
               <p class="txt-cur-location">陕西省 西安市</p>
               <p class="attention">[添加关注]</p>
+              <div class="follow-popup">
+                <div class="follow-title">关注的城市</div>
+                <div class="follow-list"></div>
+              </div>
+              <div class="follow-limit-popup">最多只能添加5个城市</div>
             </div>
             <div class="search">
               <input class="search-input" type="text" placeholder="搜索市、区、县等">
+              <div class="search-dropdown">
+                <div class="sd-normal">
+                  <div class="sd-section">
+                    <div class="sd-title">当前定位</div>
+                    <div class="sd-current">
+                      <span class="sd-city-name">西安市</span>
+                      <img src="./img/位置.png" class="sd-loc-icon" alt="">
+                    </div>
+                  </div>
+                  <div class="sd-section sd-history-section">
+                    <div class="sd-title-row">
+                      <span class="sd-title">历史记录</span>
+                      <span class="sd-clear">清除</span>
+                    </div>
+                    <div class="sd-city-grid sd-history-grid">
+                    </div>
+                  </div>
+                  <div class="sd-section another">
+                    <div class="sd-title">热门城市</div>
+                    <div class="sd-city-grid sd-hot-grid">
+                    </div>
+                  </div>
+                </div>
+                <div class="sd-search" style="display:none">
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -42,6 +73,45 @@
               <span class="aqi-num">26</span>
               <span class="aqi-level">优</span>
             </p>
+            <div class="popwindow">
+              <div class="header">空气质量指数 26&nbsp;优</div>
+              <div class="detail">
+                <div class="inner">
+                  <table id="tb-detail">
+                    <tbody>
+                      <tr class="linel">
+                        <td>
+                          <p class="val">5</p>
+                          <p class="titl">PM2.5</p>
+                        </td>
+                        <td class="nth-2">
+                          <p class="val">10</p>
+                          <p class="titl">PM10</p>
+                        </td>
+                        <td>
+                          <p class="val">4</p>
+                          <p class="titl">SO2</p>
+                        </td>
+                      </tr>
+                      <tr class>
+                        <td>
+                          <p class="val">12</p>
+                          <p class="titl">NO2</p>
+                        </td>
+                        <td class="nth-2">
+                          <p class="val">44</p>
+                          <p class="titl">03</p>
+                        </td>
+                        <td>
+                          <p class="val">0.7</p>
+                          <p class="titl">CO</p>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="idlevel">
             <p class="info-aqi rainn">
@@ -230,7 +300,122 @@
     </div>
 
     <div class="container2">
-      <div class="sevendays"></div>
+      <div class="sevendays">
+        <a id="link-15" href="http://www.weather.com.cn/weather15d/101110101.shtml" data-boss="swryb"
+          target="_blank">15日天气预报</a>
+        <h2 class="title">
+          <div class="circle"></div>
+          <div class="txt">7日天气预报</div>
+        </h2>
+        <div class="ctweather">
+          <ol id="lsweatherday">
+            <li class="item first" style="width: 92px">
+              <p class="day">昨天</p>
+              <p class="date">08月04日</p>
+              <div class="ctdaytime">
+                <p class="weather">小雨</p>
+                <img class="icon" src="./img/weatherday/07小雨.png" alt="小雨" title="小雨">
+              </div>
+              <div class="ct-night">
+                <img class="icon" src="./img/weathernight/08中雨.png" alt="中雨" title="中雨">
+                <p class="weather">中雨</p>
+              </div>
+              <p class="wind">微风1-3级</p>
+            </li>
+            <li class="item second" style="width: 92px">
+              <p class="day">今天</p>
+              <p class="date">08月05日</p>
+              <div class="ctdaytime">
+                <p class="weather">大雨</p>
+                <img class="icon" src="./img/weatherday/09大雨.png" alt="大雨" title="大雨">
+              </div>
+              <div class="ct-night">
+                <img class="icon" src="./img/weathernight/02阴.png" alt="阴" title="阴">
+                <p class="weather">阴</p>
+              </div>
+              <p class="wind">微风1-3级</p>
+            </li>
+            <li class="item" style="width: 92px">
+              <p class="day">明天</p>
+              <p class="date">08月06日</p>
+              <div class="ctdaytime">
+                <p class="weather">多云</p>
+                <img class="icon" src="./img/weatherday/01多云.png" alt="多云" title="多云">
+              </div>
+              <div class="ct-night">
+                <img class="icon" src="./img/weathernight/07小雨.png" alt="小雨" title="小雨">
+                <p class="weather">小雨</p>
+              </div>
+              <p class="wind">微风1-3级</p>
+            </li>
+            <li class="item" style="width: 92px">
+              <p class="day">后天</p>
+              <p class="date">08月07日</p>
+              <div class="ctdaytime">
+                <p class="weather">多云</p>
+                <img class="icon" src="./img/weatherday/01多云.png" alt="多云" title="多云">
+              </div>
+              <div class="ct-night">
+                <img class="icon" src="./img/weathernight/01多云.png" alt="多云" title="多云">
+                <p class="weather">多云</p>
+              </div>
+              <p class="wind">微风1-3级</p>
+            </li>
+            <li class="item" style="width: 92px">
+              <p class="day">周六</p>
+              <p class="date">08月08日</p>
+              <div class="ctdaytime">
+                <p class="weather">多云</p>
+                <img class="icon" src="./img/weatherday/01多云.png" alt="多云" title="多云">
+              </div>
+              <div class="ct-night">
+                <img class="icon" src="./img/weathernight/00晴.png" alt="晴" title="晴">
+                <p class="weather">晴</p>
+              </div>
+              <p class="wind">微风1-3级</p>
+            </li>
+            <li class="item" style="width: 92px">
+              <p class="day">周日</p>
+              <p class="date">08月09日</p>
+              <div class="ctdaytime">
+                <p class="weather">晴</p>
+                <img class="icon" src="./img/weatherday/00晴.png" alt="晴" title="晴">
+              </div>
+              <div class="ct-night">
+                <img class="icon" src="./img/weathernight/00晴.png" alt="晴" title="晴">
+                <p class="weather">晴</p>
+              </div>
+              <p class="wind">微风1-3级</p>
+            </li>
+            <li class="item" style="width: 92px">
+              <p class="day">周一</p>
+              <p class="date">08月10日</p>
+              <div class="ctdaytime">
+                <p class="weather">晴</p>
+                <img class="icon" src="./img/weatherday/00晴.png" alt="晴" title="晴">
+              </div>
+              <div class="ct-night">
+                <img class="icon" src="./img/weathernight/00晴.png" alt="晴" title="晴">
+                <p class="weather">晴</p>
+              </div>
+              <p class="wind">微风1-3级</p>
+            </li>
+            <li class="item" style="width: 92px">
+              <p class="day">周二</p>
+              <p class="date">08月11日</p>
+              <div class="ctdaytime">
+                <p class="weather">晴</p>
+                <img class="icon" src="./img/weatherday/00晴.png" alt="晴" title="晴">
+              </div>
+              <div class="ct-night">
+                <img class="icon" src="./img/weathernight/00晴.png" alt="晴" title="晴">
+                <p class="weather">晴</p>
+              </div>
+              <p class="wind">微风1-3级</p>
+            </li>
+          </ol>
+        </div>
+      </div>
       <div class="living">
         <div class="lvheader">
           <div class="lvheaderleft">
@@ -397,6 +582,7 @@
       </div>
     </div>
   </div>
+  <script src="./api.js"></script>
   <script src="./index.js"></script>
 </body>
 

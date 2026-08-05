@@ -57,6 +57,7 @@ a {
   align-items: center;
   font-size: 16px;
   color: #fff;
+  position: relative;
 }
 
 .show-icon {
@@ -70,6 +71,151 @@ a {
 
 .show .attention {
   color: rgba(255, 255, 255, 0.7);
+}
+
+.show .attention:hover {
+  color: #fff;
+  cursor: pointer;
+}
+
+/* 关注城市弹出框 */
+.follow-popup {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 5px;
+  width: 418px;
+  min-height: 86px;
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  z-index: 100;
+  padding-bottom: 10px;
+}
+
+.follow-title {
+  text-align: left;
+  font-size: 12px;
+  color: #9f9f9f;
+  height: 17px;
+  line-height: 17px;
+  margin-left: 15px;
+  padding-top: 10px;
+}
+
+.follow-row {
+  display: flex;
+  align-items: center;
+  height: 32px;
+  line-height: 32px;
+  padding-left: 15px;
+  padding-right: 25px;
+  font-size: 14px;
+  color: #555;
+  letter-spacing: 0;
+  position: relative;
+  text-align: left;
+}
+
+.follow-row:hover {
+  background: #ebeef2;
+}
+
+.follow-city {
+  width: 116px;
+  flex-shrink: 0;
+}
+
+.follow-weather {
+  flex: 1;
+  text-align: center;
+}
+
+.follow-weather-icon {
+  vertical-align: middle;
+  height: 20px;
+  margin-right: 4px;
+}
+
+.follow-temp {
+  width: 116px;
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.follow-default-btn {
+  font-size: 12px;
+  color: #777;
+  background: #f7f7f7;
+  border: 1px solid #cecece;
+  border-radius: 4px;
+  height: 18px;
+  line-height: 18px;
+  padding: 0 4px;
+  margin-left: 5px;
+  display: none;
+  cursor: pointer;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.follow-default-btn::before {
+  content: "设为默认";
+}
+
+.follow-row:hover .follow-default-btn {
+  display: inline-block;
+}
+
+.follow-row.is-default .follow-default-btn {
+  display: inline-block;
+  border-color: skyblue;
+  color: skyblue;
+}
+
+.follow-row.is-default:hover .follow-default-btn {
+  border-color: #cecece;
+  color: #777;
+}
+
+.follow-row.is-default .follow-default-btn::before {
+  content: "默认";
+}
+
+.follow-row.is-default:hover .follow-default-btn::before {
+  content: "取消默认";
+}
+
+.follow-trash {
+  display: none;
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  height: 15px;
+  width: 15px;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.follow-row:hover .follow-trash {
+  display: block;
+}
+
+.follow-limit-popup {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 5px;
+  background: #fff;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 14px;
+  color: #555;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  z-index: 101;
+  white-space: nowrap;
 }
 
 .search .search-input {
@@ -88,6 +234,194 @@ a {
 
 input::placeholder {
   color: rgba(255, 255, 255, 0.7);
+}
+
+.search {
+  position: relative;
+}
+
+.search-dropdown {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  width: 277px;
+  height: 374px;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  padding: 24px 0;
+  display: none;
+  z-index: 100;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.search-dropdown.show {
+  display: block;
+}
+
+.sd-section {
+  margin-bottom: 24px;
+}
+
+.sd-section:last-child {
+  margin-bottom: 0;
+}
+
+.sd-title {
+  font-size: 12px;
+  color: #9f9f9f;
+  height: 10px;
+  line-height: 10px;
+  margin-bottom: 8px;
+  margin-top: 2px;
+  clear: both;
+  padding: 0 12px;
+  text-align: left;
+}
+
+.sd-title-row {
+  clear: both;
+  overflow: hidden;
+}
+
+.sd-title-row .sd-title {
+  float: left;
+  /* margin-top: 10px; */
+}
+
+.sd-clear {
+  float: right;
+  width: 40px;
+  height: 18px;
+  line-height: 18px;
+  text-align: center;
+  border-radius: 9px;
+  background-color: #f0f0f0;
+  font-size: 12px;
+  color: #868686;
+  cursor: pointer;
+  margin-right: 12px;
+  margin-top: 2px;
+}
+
+/* .sd-clear:hover {
+  background-color: #e5e5e5;
+  color: #555;
+} */
+
+.sd-current {
+  height: 28px;
+  line-height: 28px;
+  padding-left: 12px;
+  clear: both;
+  text-align: left;
+}
+
+.sd-current .sd-city-name {
+  font-size: 14px;
+  color: #384c78;
+  cursor: pointer;
+}
+
+.sd-current .sd-loc-icon {
+  width: 12px;
+  height: 12px;
+  vertical-align: middle;
+  margin-left: 4px;
+  cursor: pointer;
+}
+
+.sd-city-grid {
+  clear: both;
+  overflow: hidden;
+}
+
+/* 历史记录为空时保留位置（不塌陷） */
+.sd-history-grid {
+  min-height: 25px;
+}
+
+.sd-city {
+  float: left;
+  width: 25%;
+  height: 25px;
+  line-height: 25px;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-left: 12px;
+  box-sizing: border-box;
+  font-size: 14px;
+  color: #384c78;
+  text-align: left;
+}
+
+/* .another {
+  margin-bottom: 22px;
+} */
+
+.sd-city:hover {
+  background-color: #ebeef2;
+  border-radius: 5px;
+}
+
+/* 搜索模式：下拉框高度自适应 */
+.search-dropdown.searching {
+  height: auto;
+  padding: 0;
+}
+
+.search-dropdown.searching .sd-normal {
+  display: none;
+}
+
+.search-dropdown.searching .sd-search {
+  display: block;
+}
+
+/* 搜索结果项：每个 50px 高 */
+.sd-search-item {
+  height: 50px;
+  line-height: 50px;
+  padding: 0 18px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #384c78;
+  text-align: left;
+  border-bottom: 1px solid #f0f0f0;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sd-search-item:last-child {
+  border-bottom: none;
+}
+
+.sd-search-item:hover {
+  background-color: #ebeef2;
+}
+
+.sd-search-item .ssi-name {
+  font-size: 14px;
+  color: #384c78;
+}
+
+.sd-search-item .ssi-adm {
+  font-size: 12px;
+  color: #9f9f9f;
+  margin-left: 8px;
+}
+
+/* 无结果提示 */
+.sd-no-result {
+  padding: 20px 18px;
+  text-align: center;
+  font-size: 14px;
+  color: #9f9f9f;
 }
 
 .containermax .content-wrap {
@@ -157,6 +491,104 @@ input::placeholder {
   color: #fff;
   background-color: #a3d765;
   padding: 3px 10px 3px 3px;
+}
+
+.popwindow {
+  position: absolute;
+  display: none;
+  z-index: 2;
+  height: 169px;
+  width: 254px;
+  top: 36px;
+  left: 50%;
+  margin-left: -127px;
+}
+
+.idlevel:hover .popwindow {
+  display: block;
+}
+
+.idlevel .header {
+  background-color: #a3d765;
+}
+
+.popwindow .header {
+  border-radius: 6px 6px 6px 6px;
+  height: 42px;
+  line-height: 42px;
+  padding-top: 0;
+  font-size: 18px;
+  color: #fff;
+  text-align: center;
+}
+
+.popwindow .header:before {
+  content: '';
+  display: block;
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-bottom: 7px solid #a3d765;
+  top: -5px;
+  left: 50%;
+  margin-left: -7px;
+}
+
+.popwindow .detail {
+  min-height: 126px;
+  overflow-y: hidden;
+  padding: 0 10px 10px 10px;
+  margin: 0 -10px;
+}
+
+.popwindow .detail .inner {
+  background: #fff;
+  border-radius: 0px 0px 6px 6px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, .1);
+}
+
+tbody {
+  display: table-row-group;
+  vertical-align: middle;
+  unicode-bidi: isolate;
+  border-color: inherit;
+}
+
+#tb-detail {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  border: 1px solid #efefef;
+  text-align: center;
+}
+
+#tb-detail td {
+  border: 1px solid #efefef;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.popwindow .tb-detail .linel {
+  border-radius: 1px solid #efefef;
+}
+
+#tb-detail tr {
+  height: 65px;
+}
+
+.popwindow .val {
+  font-size: 14px;
+  color: #555;
+  line-height: 24px;
+}
+
+.popwindow .titl {
+  font-size: 12px;
+  color: #9f9f9f;
+  line-height: 24px;
 }
 
 #ct-main .idlevel .rainn {
@@ -380,8 +812,123 @@ ul {
   padding: 20px 0 0;
   border-radius: 10px;
   /* background-color: #fff; */
-  background-color: #a3d765;
+  /* background-color: #a3d765; */
   box-shadow: 0 0 14px 0 rgba(0, 0, 0, 0.15);
+}
+
+.container2 .sevendays .ctweather {
+  margin-left: 2px;
+}
+
+.container2 .sevendays #link-15 {
+  float: right;
+  background: #f8faff;
+  border: 1px solid #dce5f0;
+  border-radius: 37px;
+  font-size: 12px;
+  color: #384c78;
+  line-height: 26px;
+  height: 26px;
+  width: 100px;
+  text-align: center;
+  margin-right: 30px;
+}
+
+.sevendays #link-15:hover {
+  background-color: #eef0f6;
+  border: 1px solid #e9e9e9;
+  color: #868686;
+}
+
+.container2 .title {
+  display: flex;
+  /* align-items: center;
+  justify-content: center; */
+}
+
+.sevendays .title {
+  font-size: 18px;
+  color: #344665;
+  line-height: 25px;
+  height: 25px;
+  margin-bottom: 18px;
+  margin-left: 30px;
+}
+
+.sevendays .title .txt {
+  font-weight: 400;
+}
+
+.container2 .title .circle {
+  height: 7px;
+  width: 7px;
+  border-radius: 50%;
+  background-color: #344665;
+  margin-right: 10px;
+  margin-top: 10px;
+}
+
+.sevendays .item {
+  width: 92px;
+  text-align: center;
+  float: left;
+  background-repeat: no-repeat;
+  background-position: right;
+  position: relative;
+  padding: 11px 0 25px;
+}
+
+.sevendays .item .day {
+  font-size: 14px;
+  color: #384c78;
+  margin-bottom: 12px;
+  height: 14px;
+  line-height: 14px;
+}
+
+.sevendays .item.first .day {
+  color: #c2c2c2;
+}
+
+.sevendays .item .date {
+  font-size: 12px;
+  color: #8a9baf;
+  margin-bottom: 30px;
+  height: 12px;
+  line-height: 12px;
+}
+
+.sevendays .item.first .date {
+  color: #c2c2c2;
+}
+
+.sevendays .item .ctdaytime .weather {
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #384c78;
+  line-height: 14px;
+  height: 14px;
+  /* text-align: center; */
+}
+
+.sevendays .item.first .ctdaytime .weather {
+  color: #c2c2c2;
+}
+
+.ctweather .item.first .icon {
+  opacity: 0.3;
+}
+
+.ctweather .item .icon {
+  display: inline-block;
+  height: 30px;
+  width: 30px;
+  border: none;
+}
+
+.ctweather .ct-night {
+  margin-top: 174px;
+  margin-bottom: 24px;
 }
 
 .container2 .living {
@@ -391,6 +938,28 @@ ul {
   flex-direction: column;
   /* align-items: center; */
   justify-content: flex-start;
+}
+
+.sevendays .item .weather {
+  font-size: 14px;
+  color: #384c78;
+  line-height: 14px;
+  height: 14px;
+}
+
+.sevendays .item.first .weather {
+  color: #c2c2c2;
+}
+
+.sevendays .item .wind {
+  font-size: 12px;
+  color: #8a9baf;
+  line-height: 12px;
+  height: 12px;
+}
+
+.sevendays .item.first .wind {
+  color: #c2c2c2;
 }
 
 .container2 .living .lvheader {
