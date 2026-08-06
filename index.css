@@ -912,6 +912,17 @@ ul {
   /* background-color: #fff; */
   /* background-color: #a3d765; */
   box-shadow: 0 0 14px 0 rgba(0, 0, 0, 0.15);
+  position: relative;
+}
+
+/* 七日预报中间温度折线图容器（白天图标下5px ~ 夜晚图标上5px） */
+.pink-band {
+  position: absolute;
+  width: 740px;
+  left: 0;
+  z-index: 1;
+  pointer-events: none;
+  /* top / height 由 JS 按实际图标位置动态计算 */
 }
 
 .container2 .sevendays .ctweather {

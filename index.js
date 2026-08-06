@@ -2291,3 +2291,280 @@
 
   tryLoad();
 })();
+
+// 七日预报中间温度折线图：白天图标下5px ~ 夜晚图标上5px
+// 橙色折线=白天最高温(tempMax)，skyblue折线=夜晚最低温(tempMin)
+// 每度1px相对高度，中线对齐盒子中线
+(function () {
+  var sevendays = document.querySelector('.sevendays');
+  var pinkBand = document.getElementById('pinkBand');
+  if (!sevendays || !pinkBand) return;
+
+  var DEFAULT_KEY = 'tencent_weather_default_v1';
+  var CURRENT_KEY = 'tencent_weather_current_v3';
+  var HISTORY_KEY = 'tencent_weather_history_v2';
+  var txtCurLocation = document.querySelector('.txt-cur-location');
+
+  // 创建 canvas
+  var canvas = document.createElement('canvas');
+  canvas.style.width = '100%';
+  canvas.style.height = '100%';
+  canvas.style.display = 'block';
+  pinkBand.appendChild(canvas);
+  var ctx = canvas.getContext('2d');
+
+  var dayTemps = [];
+  var nightTemps = [];
+  var bandHeight = 164;
+  var drawW = 740;
+  var dpr = window.devicePixelRatio || 1;
+
+  // ---------- 城市ID ----------
+  function getCurrentCityId() {
+    var txt = txtCurLocation ? txtCurLocation.textContent.trim() : '';
+    var cityName = txt.split(/\s+/).pop().replace(/市$/, '');
+    var keys = [HISTORY_KEY, DEFAULT_KEY, CURRENT_KEY];
+    for (var i = 0; i < keys.length; i++) {
+      try {
+        var raw = localStorage.getItem(keys[i]);
+        if (!raw) continue;
+        var parsed = JSON.parse(raw);
+        var list = Array.isArray(parsed) ? parsed : [parsed];
+        for (var j = 0; j < list.length; j++) {
+          if (list[j] && list[j].name && list[j].id) {
+            if (list[j].name.replace(/市$/, '') === cityName) return list[j].id;
+          }
+        }
+      } catch (e) { }
+    }
+    try {
+      var def = JSON.parse(localStorage.getItem(DEFAULT_KEY) || 'null');
+      if (def && def.id) return def.id;
+      var cur = JSON.parse(localStorage.getItem(CURRENT_KEY) || 'null');
+      if (cur && cur.id) return cur.id;
+      var hist = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+      if (hist.length && hist[0].id) return hist[0].id;
+    } catch (e) { }
+    return '101110101';
+  }
+
+  // ---------- 日期工具 ----------
+  function pad2(n) { return n < 10 ? '0' + n : '' + n; }
+  function toDateStr(d) { return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); }
+  function dateToApiStr(d) { return d.getFullYear() + pad2(d.getMonth() + 1) + pad2(d.getDate()); }
+
+  // ---------- 定位粉色盒子 + 设置 canvas 尺寸 ----------
+  function positionBand() {
+    var firstItem = sevendays.querySelector('.item');
+    if (!firstItem) return;
+    var dayIcon = firstItem.querySelector('.ctdaytime .icon');
+    var nightIcon = firstItem.querySelector('.ct-night .icon');
+    if (!dayIcon || !nightIcon) return;
+
+    var sevRect = sevendays.getBoundingClientRect();
+    var dayRect = dayIcon.getBoundingClientRect();
+    var nightRect = nightIcon.getBoundingClientRect();
+
+    var top = dayRect.bottom - sevRect.top + 5;
+    var bottom = nightRect.top - sevRect.top - 5;
+    if (bottom <= top) return;
+
+    pinkBand.style.top = top + 'px';
+    pinkBand.style.height = (bottom - top) + 'px';
+    bandHeight = bottom - top;
+
+    // canvas 物理像素（高分辨率屏幕不模糊）
+    dpr = window.devicePixelRatio || 1;
+    canvas.width = drawW * dpr;
+    canvas.height = bandHeight * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    drawChart();
+  }
+
+  // ---------- 绘制折线图 ----------
+  function drawChart() {
+    ctx.clearRect(0, 0, drawW, bandHeight);
+
+    var items = sevendays.querySelectorAll('.item');
+    var count = items.length;
+    if (!count) return;
+
+    var itemWidth = 92;
+    var marginLeft = 2; // ctweather margin-left
+
+    // 计算所有温度的最大/最小值，按比例铺满盒子（落差明显）
+    var allTemps = [];
+    dayTemps.forEach(function (t) { if (t != null && !isNaN(t)) allTemps.push(t); });
+    nightTemps.forEach(function (t) { if (t != null && !isNaN(t)) allTemps.push(t); });
+    if (!allTemps.length) return;
+
+    var maxTemp = allTemps[0];
+    var minTemp = allTemps[0];
+    for (var i = 1; i < allTemps.length; i++) {
+      if (allTemps[i] > maxTemp) maxTemp = allTemps[i];
+      if (allTemps[i] < minTemp) minTemp = allTemps[i];
+    }
+
+    drawSeries(dayTemps, '#ffa500', maxTemp, minTemp, true, count, itemWidth, marginLeft);
+    drawSeries(nightTemps, '#87ceeb', maxTemp, minTemp, false, count, itemWidth, marginLeft);
+  }
+
+  // 绘制单条折线（橙色=白天上方文字 / skyblue=夜晚下方文字）
+  function drawSeries(temps, color, maxTemp, minTemp, isDay, count, itemWidth, marginLeft) {
+    // 上下各留 25px 给温度文字（圆点半径4 + 间距5 + 字体12 + 余量4）
+    var padding = 25;
+    var usableH = bandHeight - padding * 2;
+    var tempRange = maxTemp - minTemp;
+
+    var points = [];
+    for (var i = 0; i < count && i < temps.length; i++) {
+      if (temps[i] == null || isNaN(temps[i])) continue;
+      var x = marginLeft + i * itemWidth + itemWidth / 2; // li 中间
+      var y;
+      if (tempRange === 0) {
+        y = bandHeight / 2; // 所有温度相同，居中
+      } else {
+        // 温度越高越靠上，按比例铺满可用高度
+        y = padding + (maxTemp - temps[i]) / tempRange * usableH;
+      }
+      points.push({ x: x, y: y, temp: temps[i], liIndex: i });
+    }
+
+    // 细线连接圆点
+    if (points.length > 1) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(points[0].x, points[0].y);
+      for (var i = 1; i < points.length; i++) {
+        ctx.lineTo(points[i].x, points[i].y);
+      }
+      ctx.stroke();
+    }
+
+    // 圆点 + 温度文字
+    for (var i = 0; i < points.length; i++) {
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(points[i].x, points[i].y, 4, 0, Math.PI * 2);
+      ctx.fill();
+
+      // 温度文字颜色与 .weather 一致（item first 用灰色 #c2c2c2）
+      ctx.fillStyle = points[i].liIndex === 0 ? '#c2c2c2' : '#384c78';
+      ctx.font = '12px "Microsoft Yahei", sans-serif';
+      ctx.textAlign = 'center';
+      var tempText = points[i].temp + '°';
+      if (isDay) {
+        // 圆点上方5px（文字底部 = 圆点上沿 - 5）
+        ctx.textBaseline = 'bottom';
+        ctx.fillText(tempText, points[i].x, points[i].y - 4 - 5);
+      } else {
+        // 圆点下方5px（文字顶部 = 圆点下沿 + 5）
+        ctx.textBaseline = 'top';
+        ctx.fillText(tempText, points[i].x, points[i].y + 4 + 5);
+      }
+    }
+  }
+
+  // ---------- 获取温度数据 ----------
+  function loadTemps() {
+    if (typeof getWeatherDaily !== 'function') return;
+    var cityId = getCurrentCityId();
+    if (!cityId) return;
+
+    var now = new Date();
+    var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    var yesterday = new Date(today.getTime() - 86400000);
+    var todayStr = toDateStr(today);
+
+    function safe(p) { return p.then(function (v) { return v; }).catch(function () { return null; }); }
+
+    var promises = [safe(getWeatherDaily(cityId, '7d'))];
+    if (typeof getHistoricalWeather === 'function') {
+      promises.push(safe(getHistoricalWeather(cityId, dateToApiStr(yesterday))));
+    } else {
+      promises.push(Promise.resolve(null));
+    }
+
+    Promise.all(promises).then(function (res) {
+      var dailyRes = res[0], yestRes = res[1];
+      var daily = (dailyRes && dailyRes.daily) ? dailyRes.daily : [];
+
+      dayTemps = [];
+      nightTemps = [];
+
+      // 昨天（历史天气）
+      if (yestRes && yestRes.weatherDaily) {
+        dayTemps.push(yestRes.weatherDaily.tempMax != null ? +yestRes.weatherDaily.tempMax : null);
+        nightTemps.push(yestRes.weatherDaily.tempMin != null ? +yestRes.weatherDaily.tempMin : null);
+      } else {
+        dayTemps.push(null);
+        nightTemps.push(null);
+      }
+
+      // 今天
+      var todayData = null;
+      for (var i = 0; i < daily.length; i++) {
+        if (daily[i].fxDate === todayStr) { todayData = daily[i]; break; }
+      }
+      if (!todayData && daily.length > 0) todayData = daily[0];
+      if (todayData) {
+        dayTemps.push(todayData.tempMax != null ? +todayData.tempMax : null);
+        nightTemps.push(todayData.tempMin != null ? +todayData.tempMin : null);
+      } else {
+        dayTemps.push(null);
+        nightTemps.push(null);
+      }
+
+      // 明天及以后
+      var futureDays = daily.filter(function (d) { return d.fxDate > todayStr; });
+      for (var j = 0; j < 6 && j < futureDays.length; j++) {
+        dayTemps.push(futureDays[j].tempMax != null ? +futureDays[j].tempMax : null);
+        nightTemps.push(futureDays[j].tempMin != null ? +futureDays[j].tempMin : null);
+      }
+
+      drawChart();
+    }).catch(function (err) {
+      console.error('温度折线图数据获取失败:', err);
+    });
+  }
+
+  // ---------- 初始化 ----------
+  if (document.readyState === 'complete') {
+    positionBand();
+  } else {
+    window.addEventListener('load', positionBand);
+  }
+  window.addEventListener('resize', positionBand);
+
+  // 七日预报 DOM 更新后重新定位
+  var lsweatherday = document.getElementById('lsweatherday');
+  if (lsweatherday && typeof MutationObserver !== 'undefined') {
+    var observer = new MutationObserver(function () {
+      setTimeout(positionBand, 50);
+    });
+    observer.observe(lsweatherday, { childList: true, subtree: true, characterData: true });
+  }
+
+  // 城市切换时重新获取温度
+  if (txtCurLocation && typeof MutationObserver !== 'undefined') {
+    var cityObserver = new MutationObserver(function () {
+      loadTemps();
+    });
+    cityObserver.observe(txtCurLocation, { childList: true, characterData: true, subtree: true });
+  }
+
+  function tryLoadTemps() {
+    var cityId = getCurrentCityId();
+    if (cityId) {
+      loadTemps();
+    } else {
+      setTimeout(tryLoadTemps, 500);
+    }
+  }
+  tryLoadTemps();
+
+  // 每30分钟刷新
+  setInterval(loadTemps, 1800000);
+})();
