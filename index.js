@@ -311,20 +311,45 @@
       sdSearch.appendChild(noResult);
       return;
     }
+    var query = searchInput.value.trim();
+    // 通用高亮：把 text 中所有匹配 query 的部分用 skyblue 色 span 包裹
+    function highlightMatch(text) {
+      var fragment = document.createDocumentFragment();
+      if (!query || !text || text.indexOf(query) < 0) {
+        fragment.appendChild(document.createTextNode(text || ''));
+        return fragment;
+      }
+      var remaining = text;
+      var idx;
+      while ((idx = remaining.indexOf(query)) >= 0) {
+        if (idx > 0) {
+          fragment.appendChild(document.createTextNode(remaining.substring(0, idx)));
+        }
+        var highlight = document.createElement('span');
+        highlight.style.color = 'skyblue';
+        highlight.textContent = query;
+        fragment.appendChild(highlight);
+        remaining = remaining.substring(idx + query.length);
+      }
+      if (remaining.length > 0) {
+        fragment.appendChild(document.createTextNode(remaining));
+      }
+      return fragment;
+    }
     cities.forEach(function (loc) {
       var item = document.createElement('div');
       item.className = 'sd-search-item';
 
       var name = document.createElement('span');
       name.className = 'ssi-name';
-      name.textContent = loc.name;
+      name.appendChild(highlightMatch(loc.name));
       item.appendChild(name);
 
       var admParts = [loc.adm1, loc.adm2].filter(Boolean);
       if (admParts.length > 0) {
         var adm = document.createElement('span');
         adm.className = 'ssi-adm';
-        adm.textContent = admParts.join(' ');
+        adm.appendChild(highlightMatch(admParts.join(' ')));
         item.appendChild(adm);
       }
 
