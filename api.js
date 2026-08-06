@@ -82,11 +82,11 @@ async function getWeatherAlert(latitude, longitude) {
   return request(`/weatheralert/v1/current/${latitude}/${longitude}`);
 }
 
-// 10. 天气指数（基于经纬度）
-// GET /weatheralert/v1/current/{latitude}/{longitude}
-// 注：用户提供的路径与天气预警相同，按需调整
-async function getWeatherIndices(latitude, longitude) {
-  return request(`/weatheralert/v1/current/${latitude}/${longitude}`);
+// 10. 天气指数 / 生活指数（基于 Location ID）
+// GET /v7/indices/{days}  days: 1d / 3d / 7d / 10d / 15d
+// type=0 返回全部指数类型
+async function getWeatherIndices(location, days = '1d', type = '0') {
+  return request(`/v7/indices/${days}`, { location, type });
 }
 
 // 11. 实时空气质量（基于经纬度）
