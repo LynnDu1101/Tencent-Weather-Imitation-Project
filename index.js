@@ -348,12 +348,32 @@
     showSearching();
     if (searchTimer) clearTimeout(searchTimer);
     searchTimer = setTimeout(function () {
+      // 本地搜索（即时，保证中文/汉字部分匹配能搜到热门城市）
+      var localResults = searchLocalCities(query);
+      // API搜索（拼音/英文）
       searchCity(query).then(function (res) {
-        renderSearchResults(res && res.location ? res.location : []);
+        var apiResults = (res && res.location) ? res.location : [];
+        // 合并本地 + API 结果（按 id 去重）
+        var seen = {};
+        var merged = [];
+        localResults.forEach(function (c) {
+          if (!seen[c.id]) { seen[c.id] = true; merged.push(c); }
+        });
+        apiResults.forEach(function (c) {
+          if (!seen[c.id]) { seen[c.id] = true; merged.push(c); }
+        });
+        renderSearchResults(merged);
       }).catch(function () {
-        renderSearchResults([]);
+        renderSearchResults(localResults);
       });
     }, 300);
+  }
+
+  // 本地模糊搜索（热门城市列表，支持汉字部分匹配）
+  function searchLocalCities(query) {
+    return HOT_CITIES.filter(function (city) {
+      return city.name.indexOf(query) !== -1;
+    });
   }
 
   // ---------- 热门城市（只显示市，不显示区） ----------
@@ -610,6 +630,15 @@
     var defaultCity = getDefaultCity();
     followList.innerHTML = '';
 
+    // 没有关注城市时，在盒子中间显示提示
+    if (list.length === 0) {
+      var tip = document.createElement('div');
+      tip.className = 'follow-empty-tip';
+      tip.textContent = '点击"添加关注"添加城市哟~';
+      followList.appendChild(tip);
+      return;
+    }
+
     list.forEach(function (city) {
       var row = document.createElement('div');
       row.className = 'follow-row';
@@ -713,6 +742,21 @@
       if (currentSelectedCity) {
         addFollowedCity(currentSelectedCity);
       }
+    });
+  }
+
+  // 点击"当前定位"城市名或位置图标，恢复到定位城市
+  if (sdCurrent) {
+    sdCurrent.style.cursor = 'pointer';
+    sdCurrent.addEventListener('click', function () {
+      var geoCity = getCurrentCity();
+      if (geoCity) {
+        updateTxtLocation(geoCity);
+        currentSelectedCity = geoCity;
+        updateAttentionBtn();
+      }
+      resetSearch();
+      closeDropdown();
     });
   }
 

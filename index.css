@@ -104,6 +104,16 @@ a {
   padding-top: 10px;
 }
 
+/* 没有关注城市时的提示文字（居中显示） */
+.follow-empty-tip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 49px;
+  font-size: 14px;
+  color: #9f9f9f;
+}
+
 .follow-row {
   display: flex;
   align-items: center;
